@@ -56,17 +56,31 @@ def main():
     energysystem.add(bgas, bel, bth)
 
     # an excess and a shortage variable can help to avoid infeasible problems
-    energysystem.add(Sink(label="excess_el", inputs={bel: Flow(variable_costs=data["DAA_price"]*-1)}))
+    energysystem.add(
+        Sink(
+            label="excess_el",
+            inputs={bel: Flow(
+                variable_costs=data["DAA_price"]*-1
+            )}
+        )
+    )
 
     # sources
     energysystem.add(
         Source(
-            label="rgas", outputs={bgas: Flow(variable_costs=data["Gas_price"]/1000+data["CO2_price"]*0.000202)}
+            label="rgas",
+            outputs={bgas: Flow(
+                variable_costs=data["Gas_price"]/1000
+                               +data["CO2_price"]*0.000202
+            )}
         )
     )
     energysystem.add(
         Source(
-            label="belgrid", outputs={bel: Flow(variable_costs=data["DAA_price"])}
+            label="belgrid",
+            outputs={bel: Flow(
+                variable_costs=data["DAA_price"]
+            )}
         )
     )
 
@@ -74,7 +88,10 @@ def main():
     energysystem.add(
         Sink(
             label="demand_th",
-            inputs={bth: Flow(nominal_value=353e3, fix=data["demand_th"])},
+            inputs={bth: Flow(
+                nominal_value=353e3,
+                fix=data["demand_th"]
+            )},
         )
     )
 
@@ -83,7 +100,10 @@ def main():
         Converter(
             label="pth",
             inputs={bel: Flow()},
-            outputs={bth: Flow(nominal_value=10e3, variable_costs=1)},
+            outputs={bth: Flow(
+                nominal_value=10e3,
+                variable_costs=1
+            )},
             conversion_factors={bel: 0.99},
         )
     )
@@ -107,10 +127,10 @@ def main():
             nominal_storage_capacity=900e3,
             inputs={bth: Flow(nominal_value=50e3)},
             outputs={bth: Flow(nominal_value=50e3)},
-            loss_rate=0.00,
+            loss_rate=0.001,
             initial_storage_level=None,
             inflow_conversion_factor=1,
-            outflow_conversion_factor=1,
+            outflow_conversion_factor=0.99,
             )
     )
 
@@ -129,8 +149,11 @@ def main():
     energysystem.results["main"] = processing.results(model)
     energysystem.results["meta"] = processing.meta_results(model)
 
+    # Get the current working directory
+    current_directory = os.getcwd()
+    file_name = 'results.oemof'
 
-    energysystem.dump('/home/michel/PycharmProjects/Oemof_Video5', filename='results.oemof')
+    energysystem.dump(current_directory, file_name)
 
     logging.info("Results have been dumped.")
 
