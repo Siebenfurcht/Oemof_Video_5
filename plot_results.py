@@ -46,8 +46,8 @@ plt.tight_layout()
 plt.show()
 
 # Analyse storage node
-Sum_storage_Inflow = storage['sequences'][(('storage', 'bth'), 'flow')].sum()
-Sum_storage_Outflow = storage['sequences'][(('bth', 'storage'), 'flow')].sum()
+Sum_storage_Outflow = storage['sequences'][(('storage', 'bth'), 'flow')].sum()
+Sum_storage_Inflow = storage['sequences'][(('bth', 'storage'), 'flow')].sum()
 
 fig, ax = plt.subplots(figsize=(16, 9))
 storage['sequences'][(('bth', 'storage'), 'flow')].plot(
